@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة كبار القراء | منصة صوتك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #064E3B;
+            --header-dark: #033E2F;
+            --accent-green: #10B981;
+            --white: #FFFFFF;
+            --card-bg: rgba(255, 255, 255, 0.08);
+        }
+        body { font-family: 'Almarai', sans-serif; background-color: var(--primary-dark); margin: 0; color: var(--white); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--header-dark); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; width: 100%; box-sizing: border-box; }
+        .back-btn { background: none; border: none; font-size: 1.4rem; color: var(--accent-green); cursor: pointer; text-decoration: none; }
+        .brand-name { font-weight: bold; color: var(--white); font-size: 1.1rem; margin: 0; }
+        .reciters-container { max-width: 1200px; width: 90%; margin: 30px auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        @media (max-width: 768px) { .reciters-container { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
+        .reciter-card { background: var(--card-bg); border-radius: 20px; padding: 20px 10px; text-align: center; text-decoration: none; color: white; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .reciter-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); border: 1px solid var(--accent-green); }
+        .avatar-box { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--accent-green); }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        .reciter-name { font-family: 'Amiri', serif; font-size: 1.1rem; font-weight: 700; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="home.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+        <h1 class="brand-name">محاكاة القراء</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div class="reciters-container" id="recitersGrid"></div>
+
+    <script>
+        const recitersList = [
+            { name: "محمود الحصري", img: "images/Husary.webp" },
+            { name: "عبدالباسط عبدالصمد", img: "images/AbdulBasit.webp" },
+            { name: "محمد صديق المنشاوي", img: "images/Elminshwey.webp" },
+            { name: "محمد رفعت", img: "images/محمد رفعت.jpg" },
+            { name: "عبدالرحمن السديس", img: "images/Abdul-Rahman_Al-Sudais.webp" },
+            { name: "سعود الشريم", img: "images/Saud-AlShuraim.webp" },
+            { name: "علي جابر", img: "images/علي جابر.jpg" },
+            { name: "ماهر المعيقلي", img: "images/ماهر المعيقلي.jpg" },
+            { name: "ياسر الدوسري", img: "images/ياسر الدوسري.jpg" },
+            { name: "محمد ايوب", img: "images/محمد أيوب.jpg" },
+            { name: "مشاري العفاسي", img: "images/mischarirashid.webp" },
+            { name: "أحمد العجمي", img: "images/أحمد بن علي العجمي.jpg" },
+            { name: "اسلام صبحي", img: "images/Islam-Sobhie.webp" },
+            { name: "محمد القلاجي", img: "images/images.jpg" },
+            { name: "محمد اللحيدان", img: "images/محمد اللحيدان.jpg" },
+            { name: "محمد أيوب (بريطانيا)", img: "images/images (1).jpg" },
+            { name: "بلال الدربالي", img: "images/تنزيل.jpg" },
+            { name: "محمد ديبيروف", img: "images/تنزيل (1).jpg" },
+            { name: "رعد الكردي", img: "images/raad-al-kurdi.webp" },
+            { name: "فارس عباد", img: "images/faresAbbad.webp" },
+            { name: "ابراهيم شحاته السمندوي", img: "images/تنزيل (2).jpg" },
+            { name: "سعد الغامدي", img: "images/ghamdi.webp" },
+            { name: "محمد محمود الطبلاوي", img: "images/al_tablawy.webp" },
+            { name: "مصطفى اسماعيل", img: "images/مصطفى إسماعيل.jpg" },
+            { name: "نورين محمد صديق", img: "images/Noreen-Mohamed-Siddi.webp" },
+            { name: "صلاح البدير", img: "images/Salah-Al-Budair.webp" },
+            { name: "خالد الجليل", img: "images/khalid-al-jalil.webp" },
+            { name: "أبو بكر الشاطري", img: "images/AbuBakerAlShatiri-1.webp" },
+            { name: "محمود علي البناء", img: "images/Albanna.webp" }
+        ];
+
+        const grid = document.getElementById('recitersGrid');
+        recitersList.forEach(reciter => {
+            grid.innerHTML += `
+                <a href="Rating.html?reciter=${encodeURIComponent(reciter.name)}" class="reciter-card">
+                    <div class="avatar-box">
+                        <img src="${reciter.img}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\' style=\'font-size:2rem; padding-top:20px;\'></i>'">
+                    </div>
+                    <h3 class="reciter-name">${reciter.name}</h3>
+                </a>
+            `;
+        });
+    </script>
+</body>
+</html>

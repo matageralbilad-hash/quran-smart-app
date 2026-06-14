@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التسميع الذكي | منصة صوتك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #064E3B;
+            --header-dark: #033E2F;
+            --accent-green: #10B981;
+            --white: #FFFFFF;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --error-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Almarai', sans-serif;
+            background-color: var(--primary-dark);
+            margin: 0;
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--header-dark);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-sizing: border-box;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--accent-green);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .brand-name { font-weight: bold; color: var(--white); font-size: 1.1rem; margin: 0; }
+
+        .main-panel {
+            max-width: 600px;
+            width: 90%;
+            margin: 30px auto;
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 35px 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-sizing: border-box;
+        }
+
+        .setup-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .input-wrapper { display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 0.9rem; color: var(--accent-green); font-weight: bold; }
+
+        select, input {
+            padding: 12px 15px;
+            border-radius: 12px;
+            background: #02251C;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--white);
+            font-family: 'Almarai', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .type-selector { display: flex; gap: 20px; justify-content: center; margin: 25px 0; }
+        .type-option {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 35px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .type-option.active {
+            background: var(--accent-green);
+            color: #02251C;
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .start-btn {
+            width: 100%; padding: 15px; background: var(--accent-green); color: #02251C;
+            border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; font-family: 'Almarai', sans-serif; transition: 0.3s;
+        }
+        .start-btn:hover { background: var(--white); }
+
+        .mic-btn {
+            width: 85px; height: 85px; background: var(--accent-green); border: none;
+            border-radius: 50%; color: #02251C; font-size: 2rem; cursor: pointer;
+            transition: 0.3s ease; display: inline-flex; justify-content: center; align-items: center; margin: 20px 0;
+        }
+        .mic-btn.listening { background: var(--error-red); color: var(--white); animation: pulse-mic 1.5s infinite; }
+
+        @keyframes pulse-mic {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .quran-display-box {
+            background: #02251C; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 18px;
+            padding: 30px 20px; min-height: 150px; margin-top: 20px; font-family: 'Amiri', serif;
+            font-size: 1.9rem; line-height: 2.2; text-align: justify; box-sizing: border-box;
+        }
+
+        .text-muted { color: rgba(255, 255, 255, 0.2); }
+        .text-success { color: var(--accent-green); font-weight: bold; transition: color 0.4s ease; }
+        .text-hint { color: #FBBF24; font-weight: bold; animation: flash-hint 1s 2; } /* لون أصفر براق للكلمة الملقنة */
+
+        @keyframes flash-hint { 50% { opacity: 0.5; } }
+        .status-text { font-size: 0.95rem; color: rgba(255,255,255,0.7); margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button onclick="window.location.href='home.html'" class="back-btn">&#10142;</button>
+        <h1 class="brand-name">منصة صوتك | حلقة التسميع الذكية</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div class="main-panel" id="setupPanel">
+        <h2 style="margin-top: 0; font-family: 'Amiri', serif; font-size: 2rem; text-align: center; color: var(--accent-green);">معلم الحفظ التفاعلي</h2>
+        <p style="text-align: center; font-size: 0.9rem; opacity: 0.7; margin-bottom: 25px;">تحديد النطاق ليدخل معك الأستاذ الذكي لمتابعة تلاوتك</p>
+
+        <div class="setup-group">
+            <div class="input-wrapper">
+                <label>من سورة:</label>
+                <select id="fromSurah"></select>
+            </div>
+            <div class="input-wrapper">
+                <label>إلى سورة:</label>
+                <select id="toSurah"></select>
+            </div>
+        </div>
+
+        <div class="setup-group">
+            <div class="input-wrapper">
+                <label>من آية:</label>
+                <input type="number" id="fromAyah" value="1" min="1">
+            </div>
+            <div class="input-wrapper">
+                <label>إلى آية:</label>
+                <input type="number" id="toAyah" value="7" min="1">
+            </div>
+        </div>
+
+        <div class="type-selector">
+            <div class="type-option active" id="typeHifz" onclick="setRecitationType('hifz')">حفظ غيب</div>
+            <div class="type-option" id="typeTilawa" onclick="setRecitationType('tilawa')">تلاوة مصحف</div>
+        </div>
+
+        <button class="start-btn" onclick="startRecitationSession()">ادخل الحلقة وابدأ التسميع</button>
+    </div>
+
+    <div class="main-panel" id="recitationPanel" style="display: none; text-align: center;">
+        <button onclick="exitSession()" style="float: right; background: none; border: none; color: var(--error-red); cursor: pointer; font-weight: bold;">إنهاء الحلقة</button>
+        <h3 id="sessionTitle" style="font-family: 'Amiri', serif; font-size: 1.8rem; margin: 0; color: var(--accent-green);"></h3>
+        
+        <button id="micBtn" class="mic-btn"><span style="font-size: 1.5rem;">🎙️</span></button>
+        <div class="status-text" id="statusText">الأستاذ مستعد، اضغط الميكروفون وابدأ التلاوة...</div>
+
+        <div class="quran-display-box" id="quranDisplay"></div>
+        <div id="heardText" style="font-size: 0.85rem; opacity: 0.4; margin-top: 15px; text-align: right;"></div>
+    </div>
+
+  <script>
+
+/* =========================================
+   منصة صوتك | محرك التسميع الاحترافي
+========================================= */
+
+let quranData = [];
+let targetWords = [];
+let currentIndex = 0;
+
+let mediaRecorder;
+let audioChunks = [];
+
+let isListening = false;
+let silenceTimer;
+
+let recitationType = "hifz";
+
+const API_URL = "/api/transcribe";
+
+/* =========================================
+   أسماء السور
+========================================= */
+
+const surahNames = [
+"الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"
+];
+
+const fromSelect = document.getElementById("fromSurah");
+const toSelect = document.getElementById("toSurah");
+
+surahNames.forEach((name, index)=>{
+
+    fromSelect.innerHTML += `
+    <option value="${index+1}">
+    سورة ${name}
+    </option>`;
+
+    toSelect.innerHTML += `
+    <option value="${index+1}">
+    سورة ${name}
+    </option>`;
+});
+
+/* =========================================
+   تنظيف النص
+========================================= */
+
+function normalize(text){
+
+    return text
+    .replace(/[\u064B-\u065F]/g, "")
+    .replace(/[\u0610-\u061A]/g, "")
+    .replace(/[\u06D6-\u06ED]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ة/g, "ه")
+    .replace(/ؤ/g, "و")
+    .replace(/ئ/g, "ي")
+    .replace(/ـ/g, "")
+    .replace(/[^\u0621-\u064A\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/* =========================================
+   تحميل القرآن
+========================================= */
+
+async function loadQuranData(){
+
+    const cached = localStorage.getItem("quranData");
+
+    if(cached){
+
+        quranData = JSON.parse(cached);
+
+    }else{
+
+        const res = await fetch(
+        "https://api.alquran.cloud/v1/quran/quran-uthmani"
+        );
+
+        const data = await res.json();
+
+        quranData = data.data.surahs;
+
+        localStorage.setItem(
+        "quranData",
+        JSON.stringify(quranData)
+        );
+    }
+}
+
+/* =========================================
+   نوع التسميع
+========================================= */
+
+function setRecitationType(type){
+
+    recitationType = type;
+
+    document.getElementById("typeHifz")
+    .classList.toggle("active", type==="hifz");
+
+    document.getElementById("typeTilawa")
+    .classList.toggle("active", type==="tilawa");
+}
+
+/* =========================================
+   بدء الجلسة
+========================================= */
+
+function startRecitationSession(){
+
+    targetWords = [];
+    currentIndex = 0;
+
+    let fromS = +fromSelect.value;
+    let toS = +toSelect.value;
+
+    let fromA = +document.getElementById("fromAyah").value;
+    let toA = +document.getElementById("toAyah").value;
+
+    for(let s=fromS; s<=toS; s++){
+
+        let surah = quranData[s-1];
+
+        surah.ayahs.forEach(ayah=>{
+
+            let num = ayah.numberInSurah;
+
+            if(
+                (s > fromS || num >= fromA) &&
+                (s < toS || num <= toA)
+            ){
+
+                let text = ayah.text;
+
+                let words = text.split(" ");
+
+                words.forEach(word=>{
+
+                    if(!word) return;
+
+                    targetWords.push({
+
+                        original: word,
+
+                        clean: normalize(word)
+
+                    });
+                });
+            }
+        });
+    }
+
+    document.getElementById("setupPanel").style.display="none";
+    document.getElementById("recitationPanel").style.display="block";
+
+    renderWords();
+}
+
+/* =========================================
+   عرض الكلمات
+========================================= */
+
+function renderWords(){
+
+    let box = document.getElementById("quranDisplay");
+
+    box.innerHTML = "";
+
+    targetWords.forEach((word,index)=>{
+
+        if(recitationType==="tilawa"){
+
+            box.innerHTML += `
+            <span id="w${index}">
+            ${word.original}
+            </span> `;
+
+        }else{
+
+            box.innerHTML += `
+            <span id="w${index}"
+            class="text-muted">
+            █
+            </span> `;
+        }
+    });
+}
+
+/* =========================================
+   تشغيل المايك
+========================================= */
+
+document.getElementById("micBtn")
+.onclick = async ()=>{
+
+    isListening = !isListening;
+
+    const btn = document.getElementById("micBtn");
+
+    if(isListening){
+
+        btn.classList.add("listening");
+
+        document.getElementById("statusText")
+        .innerText = "🎙️ جاري الاستماع...";
+
+        startRecording();
+
+    }else{
+
+        btn.classList.remove("listening");
+
+        stopRecording();
+    }
+};
+
+/* =========================================
+   بدء التسجيل
+========================================= */
+
+async function startRecording(){
+
+    const stream = await navigator.mediaDevices
+    .getUserMedia({ audio:true });
+
+    mediaRecorder = new MediaRecorder(stream);
+
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e=>{
+
+        audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async ()=>{
+
+        const blob = new Blob(audioChunks, {
+            type:"audio/webm"
+        });
+
+        sendToWhisper(blob);
+    };
+
+    mediaRecorder.start();
+
+    silenceTimer = setTimeout(()=>{
+
+        if(mediaRecorder.state==="recording"){
+
+            mediaRecorder.stop();
+        }
+
+    }, 4000);
+}
+
+/* =========================================
+   إيقاف التسجيل
+========================================= */
+
+function stopRecording(){
+
+    clearTimeout(silenceTimer);
+
+    if(mediaRecorder &&
+       mediaRecorder.state==="recording"){
+
+        mediaRecorder.stop();
+    }
+}
+
+/* =========================================
+   إرسال الصوت إلى Whisper
+========================================= */
+
+async function sendToWhisper(blob){
+
+    document.getElementById("statusText")
+    .innerText = "🧠 تحليل التلاوة...";
+
+    try{
+
+        const response = await fetch(API_URL,{
+
+            method:"POST",
+
+            body: blob
+        });
+
+        const data = await response.json();
+
+        if(data.text){
+
+            document.getElementById("heardText")
+            .innerText = data.text;
+
+            processRecitation(data.text);
+        }
+
+    }catch(err){
+
+        console.log(err);
+
+        document.getElementById("statusText")
+        .innerText = "❌ فشل التحليل";
+    }
+
+    if(isListening){
+
+        startRecording();
+    }
+}
+
+/* =========================================
+   تحليل التلاوة
+========================================= */
+
+function processRecitation(text){
+
+    const spokenWords =
+    normalize(text).split(" ");
+
+    spokenWords.forEach(spoken=>{
+
+        if(!spoken) return;
+
+        let target = targetWords[currentIndex];
+
+        if(!target) return;
+
+        if(compareWords(
+            spoken,
+            target.clean
+        )){
+
+            correctWord(currentIndex);
+
+            currentIndex++;
+
+            document.getElementById("statusText")
+            .innerText = "✔ صحيح";
+
+        }else{
+
+            wrongWord(currentIndex);
+
+            document.getElementById("statusText")
+            .innerText =
+            "❌ الصحيح: " +
+            target.original;
+        }
+    });
+
+    if(currentIndex >= targetWords.length){
+
+        finishSession();
+    }
+}
+
+/* =========================================
+   مقارنة ذكية قوية
+========================================= */
+
+function compareWords(a,b){
+
+    if(a===b) return true;
+
+    if(a.includes(b)) return true;
+
+    if(b.includes(a)) return true;
+
+    let matches = 0;
+
+    let min = Math.min(a.length,b.length);
+
+    for(let i=0;i<min;i++){
+
+        if(a[i]===b[i]) matches++;
+    }
+
+    let similarity =
+    matches / Math.max(a.length,b.length);
+
+    return similarity >= 0.75;
+}
+
+/* =========================================
+   تلوين صحيح
+========================================= */
+
+function correctWord(index){
+
+    let el = document.getElementById(
+    "w"+index
+    );
+
+    el.innerText =
+    targetWords[index].original + " ";
+
+    el.className = "text-success";
+}
+
+/* =========================================
+   تلوين خطأ
+========================================= */
+
+function wrongWord(index){
+
+    let el = document.getElementById(
+    "w"+index
+    );
+
+    el.innerText =
+    targetWords[index].original + " ";
+
+    el.style.color = "#EF4444";
+
+    el.style.fontWeight = "bold";
+}
+
+/* =========================================
+   النهاية
+========================================= */
+
+function finishSession(){
+
+    isListening = false;
+
+    document.getElementById("statusText")
+    .innerText =
+    "🎉 انتهى التسميع بنجاح";
+
+    speechSynthesis.speak(
+        new SpeechSynthesisUtterance(
+        "ما شاء الله أحسنت"
+        )
+    );
+}
+
+/* =========================================
+   خروج
+========================================= */
+
+function exitSession(){
+
+    isListening = false;
+
+    stopRecording();
+
+    document.getElementById(
+    "setupPanel"
+    ).style.display="block";
+
+    document.getElementById(
+    "recitationPanel"
+    ).style.display="none";
+}
+
+/* =========================================
+   تشغيل
+========================================= */
+
+document.addEventListener(
+"DOMContentLoaded",
+loadQuranData
+);
+
+</script>
+</body>
+</html>

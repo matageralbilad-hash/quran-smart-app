@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاركة التطبيق | منصة صوتك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #064E3B; /* لون الخلفية الأخضر الداكن الموحد */
+            --header-dark: #033E2F; /* لون الهيدر الفخم */
+            --accent-green: #10B981;
+            --white: #FFFFFF;
+            --card-bg: rgba(255, 255, 255, 0.08); /* خلفية زجاجية للبطاقات لتوحيد الهوية */
+        }
+
+        body {
+            font-family: 'Almarai', sans-serif;
+            background-color: var(--primary-dark);
+            margin: 0;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* القائمة العلوية (Header) الموحدة والفخمة */
+        header {
+            background-color: var(--header-dark);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-sizing: border-box;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--accent-green);
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .settings-trigger {
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .settings-trigger:hover { transform: rotate(90deg); }
+
+        .brand-name {
+            font-weight: bold; 
+            color: var(--white); 
+            font-size: 1.1rem; 
+            text-align: center;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        /* القائمة الجانبية المنسدلة */
+        .overlay-menu {
+            height: 0%;
+            width: 100%;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            right: 0;
+            background-color: rgba(3, 62, 47, 0.98);
+            overflow: hidden;
+            transition: 0.5s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay-menu a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 2.2rem;
+            color: var(--white);
+            display: block;
+            transition: 0.3s;
+            font-family: 'Amiri', serif;
+        }
+
+        .overlay-menu a:hover { color: var(--accent-green); }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            font-size: 4rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* بطاقة المشاركة الطراز الزجاجي المطور */
+        .share-card {
+            background: var(--card-bg);
+            max-width: 500px;
+            width: 90%;
+            margin: 40px auto;
+            padding: 40px 30px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-sizing: border-box;
+        }
+
+        .share-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .share-title { font-family: 'Amiri', serif; font-size: 2.2rem; color: var(--white); margin-bottom: 10px; }
+        .share-desc { color: rgba(255, 255, 255, 0.7); line-height: 1.7; margin-bottom: 30px; font-size: 0.95rem; }
+
+        /* حقل الرابط */
+        .link-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 15px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px dashed var(--accent-green);
+            margin-bottom: 25px;
+        }
+
+        .link-text { font-size: 0.95rem; color: var(--white); font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-left: 10px; }
+
+        .copy-btn {
+            background: var(--accent-green);
+            color: #02251C;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            font-family: 'Almarai', sans-serif;
+        }
+        .copy-btn:hover { background: var(--white); color: var(--primary-dark); }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: 0.3s;
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .social-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <div id="bigMenu" class="overlay-menu">
+        <span class="close-btn" onclick="closeNav()">&times;</span>
+        <div class="overlay-content" style="text-align: center; width: 100%;">
+            <a href="Surah.html">قائمة السور</a>
+            <a href="Juzes.html">الأجزاء الثلاثين</a>
+            <a href="Search_by_word.html">البحث بالآيات</a>
+            <a href="Share.html" onclick="closeNav()">مشاركة التطبيق</a>
+            <hr style="width: 10%; border: 0.5px solid var(--accent-green); margin: 20px auto;">
+            <a href="home.html" style="font-size: 1.2rem; opacity: 0.7; color: white;">الرئيسية</a>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-right">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+            
+            <button class="settings-trigger" onclick="openNav()">
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-green);">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+        <h1 class="brand-name">منصة صوتك | مشاركة الأجر</h1>
+        <div style="width: 60px;"></div>
+    </header>
+
+    <div class="share-card">
+        <div class="share-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+        </div>
+        <h2 class="share-title">انشر تؤجر</h2>
+        <p class="share-desc">ساهم في نشر "منصة صوتك" لتكون صدقة جارية لك، فالدال على الخير كفاعله.</p>
+
+        <div class="link-box">
+            <span class="link-text" id="appLink">https://sawtak-platform.vercel.app/</span>
+            <button class="copy-btn" onclick="copyLink()">نسخ</button>
+        </div>
+
+        <div class="social-buttons">
+            <a href="https://wa.me/?text=استمع للقرآن وتعلم التسميع عبر منصة صوتك: https://al-qurra-app.netlify.app" class="social-btn" style="background:#25D366;">واتساب</a>
+            <a href="#" class="social-btn" style="background: #0088cc;" onclick="nativeShare()">مشاركة الهاتف</a>
+        </div>
+    </div>
+
+    <script>
+        function openNav() { document.getElementById("bigMenu").style.height = "100%"; }
+        function closeNav() { document.getElementById("bigMenu").style.height = "0%"; }
+
+        function copyLink() {
+            const link = document.getElementById('appLink').innerText;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('تم نسخ رابط المنصة بنجاح! كتب الله أجرك.');
+            });
+        }
+
+        function nativeShare() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'منصة صوتك للقرآن الكريم',
+                    text: 'تطبيق القرآن الكريم الذكي لتصحيح التلاوة ومحاكاة القراء باستخدام الذكاء الاصطناعي.',
+                    url: 'https://al-qurra-app.netlify.app'
+                });
+            } else {
+                alert('ميزة المشاركة المباشرة غير مدعومة في متصفحك حالياً، يرجى نسخ الرابط بالأعلى ونشره.');
+            }
+        }
+    </script>
+</body>
+</html>

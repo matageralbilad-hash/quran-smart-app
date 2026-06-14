@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الرئيسية | منصة صوتك</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&display=swap" rel="stylesheet">
+<!-- مكتبة الأيقونات المعتمدة -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root {
+--main-black: #1A1A1B;
+--quran-green: #10B981;
+--dark-green: #064E3B; /* لون أخضر داكن غني للخلفية الكاملة */
+--light-bg-green: #047857; /* لون للمربعات السفلية */
+--white: #FFFFFF;
+}
+
+body {
+font-family: 'Almarai', sans-serif;
+background-color: var(--dark-green); /* ملء أي فراغ باللون الأخضر الداكن على الجوال واللابتوب */
+margin: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+min-height: 100vh;
+}
+
+/* القائمة العلوية (Header) باللون الأخضر المتناسق */
+header {
+width: 100%;
+padding: 15px 20px;
+background: #033E2F; /* أخضر غامق جداً للهيدر ليعطي فخامة */
+display: flex;
+justify-content: space-between;
+align-items: center;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+box-sizing: border-box;
+}
+
+.settings-btn {
+background: none;
+border: none;
+font-size: 1.5rem;
+color: var(--quran-green); /* جعل زر الإعدادات باللون الأخضر الفاتح */
+cursor: pointer;
+}
+
+.header-title {
+font-weight: bold; 
+color: var(--white); 
+font-size: 1.1rem; 
+text-align: center;
+flex-grow: 1;
+}
+
+/* حاوية الأزرار الرئيسية */
+.main-container {
+width: 90%;
+max-width: 500px;
+margin-top: 30px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+padding-bottom: 30px;
+}
+
+/* تصميم الأزرار الرئيسي */
+.app-card {
+display: flex;
+align-items: center;
+padding: 20px;
+border-radius: 15px;
+text-decoration: none;
+color: var(--white);
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.app-card:hover { 
+    transform: scale(1.02); 
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* زر قراءة القرآن بالأخضر الموحد */
+.btn-quran {
+background-color: var(--quran-green);
+}
+
+/* المربع الصغير الحاضن للأيقونة */
+.icon-box {
+width: 50px;
+height: 50px;
+background-color: rgba(255, 255, 255, 0.15); /* جعل خلفية المربع شفافة بيضاء خفيفة لتعطي مظهراً زجاجياً راقياً */
+border-radius: 10px;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-left: 15px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* تنسيق حجم ولون الأيقونة البيضاء */
+.icon-box i {
+font-size: 1.5rem;
+color: white;
+}
+
+/* زر التسميع */
+.btn-recitation {
+background-color: var(--quran-green);
+}
+
+/* زر التقليد */
+.btn-imitate {
+background: linear-gradient(135deg, #059669, #10B981);
+}
+
+.card-text h2 { margin: 0; font-size: 1.2rem; }
+.card-text p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
+
+/* الأزرار الفرعية بالأسفل */
+.sub-buttons {
+display: grid; 
+grid-template-columns: 1fr 1fr; 
+gap: 10px; 
+margin-top: 10px;
+}
+
+.sub-buttons a {
+text-align: center; 
+background: var(--light-bg-green); 
+padding: 15px; 
+border-radius: 10px; 
+text-decoration: none; 
+color: var(--white); 
+font-weight: bold;
+box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+transition: 0.3s;
+}
+
+.sub-buttons a:hover {
+    background-color: var(--quran-green);
+}
+
+/* صندوق النص الترحيبي الذكي المتغير */
+.welcome-box {
+background: rgba(255, 255, 255, 0.08);
+border-left: 4px solid var(--quran-green);
+padding: 20px;
+border-radius: 12px;
+margin-top: 25px;
+color: #E4E4E7;
+font-size: 0.95rem;
+line-height: 1.7;
+text-align: justify;
+box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* مودال الإعدادات */
+#settings-modal {
+display: none;
+position: fixed;
+top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(0,0,0,0.6);
+justify-content: center; align-items: center;
+z-index: 1000;
+}
+.modal-content {
+background: white; padding: 25px; border-radius: 20px;
+width: 80%; text-align: center; color: var(--main-black);
+}
+</style>
+</head>
+<body>
+
+<header>
+    <button class="settings-btn" onclick="toggleModal()"><i class="fas fa-cog"></i></button>
+    <div class="header-title">منصة صوتك لقضاء وقتك مع القرآن</div>
+    <div style="width: 30px;"></div> 
+</header>
+
+<div class="main-container">
+
+    <!-- زر قراءة القرآن الكريم -->
+    <a href="Surah.html" class="app-card btn-quran">
+        <div class="icon-box">
+            <i class="fas fa-quran"></i>
+        </div>
+        <div class="card-text">
+            <h2>قراءة القرآن الكريم</h2>
+            <p>ختمة كاملة - رواية حفص عن عاصم</p>
+        </div>
+    </a>
+
+    <!-- زر التسميع الذكي -->
+    <a href="Recitation.html" class="app-card btn-recitation">
+        <div class="icon-box">
+            <i class="fas fa-microphone"></i>
+        </div>
+        <div class="card-text">
+            <h2>التسميع الذكي</h2>
+            <p>اختبر حفظك مع التصحيح الفوري</p>
+        </div>
+    </a>
+
+    <!-- زر محاكاة كبار القراء -->
+    <a href="Imitate.html" class="app-card btn-imitate">
+        <div class="icon-box">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="card-text">
+            <h2>محاكاة كبار القراء</h2>
+            <p>تعلم الأداء الصوتي لـ 30 قارئ</p>
+        </div>
+    </a>
+
+    <!-- الأجزاء ومشاركة التطبيق باللون الأخضر -->
+    <div class="sub-buttons">
+        <a href="Juzes.html">الأجزاء</a>
+        <a href="Share.html">شارك التطبيق</a>
+    </div>
+
+    <!-- صندوق الكلمات والرسائل المتغيرة تلقائياً بناءً على الوقت -->
+    <div class="welcome-box" id="dynamic-message">
+        <!-- سيتم كتابة الكلام هنا تلقائياً بواسطة الجافا سكريبت بالأسفل -->
+    </div>
+
+</div>
+
+<!-- نافذة الإعدادات -->
+<div id="settings-modal">
+    <div class="modal-content">
+        <h3>الإعدادات</h3>
+        <p>محتوى نافذة الإعدادات هنا...</p>
+        <button onclick="toggleModal()" style="padding: 10px 20px; background: var(--quran-green); border: none; color: white; border-radius: 5px; cursor: pointer;">إغلاق</button>
+    </div>
+</div>
+
+<script>
+function toggleModal() {
+    const modal = document.getElementById('settings-modal');
+    modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+}
+
+// كود ذكي لتغيير نص النصيحة أسفل الأزرار بناءً على وقت المستخدم الفعلي
+document.addEventListener("DOMContentLoaded", function() {
+    const messageElement = document.getElementById("dynamic-message");
+    const currentHour = new Date().getHours();
+
+    if (currentHour >= 5 && currentHour < 12) {
+        messageElement.innerHTML = `<i class="fas fa-sun" style="color: #FBBF24; margin-left: 5px;"></i> <strong>افتتاحك ليومك بتلاوة القرآن ينير دربك ويشرح صدرك؛ فاجعل لكلمات الله نصيباً من وقتك، لتنال الطمأنينة في الدنيا والدرجات العلى في الآخرة.</strong>`;
+    } else {
+        messageElement.innerHTML = `<i class="fas fa-moon" style="color: #A7F3D0; margin-left: 5px;"></i> <strong>مرحباً بك في رحاب كلام الله؛ تلاوة القرآن ليست مجرد عبادة، بل هي نور يضيء قلبك، وشفاء لروحك، وبركة تفكّ بها عقد يومك.. فلا تحرم نفسك هذا الأجر.</strong>`;
+    }
+});
+</script>
+
+</body>
+</html>

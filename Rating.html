@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل التلاوة | منصة صوتك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-dark: #064E3B; --accent-green: #10B981; --white: #FFFFFF; }
+        body { font-family: 'Almarai', sans-serif; background-color: var(--primary-dark); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .score-big { font-size: 4rem; font-weight: bold; color: var(--accent-green); }
+        .container { width: 100%; max-width: 500px; }
+        .metric-card { background: rgba(255,255,255,0.08); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-right: 5px solid var(--accent-green); }
+        .progress-bg { background: #02251C; height: 12px; border-radius: 6px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { background: var(--accent-green); height: 100%; width: 0%; transition: width 1.5s ease; }
+        .control-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+        button { padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2 id="reciterNameDisplay">تحليل محاكاة القارئ</h2>
+    <div class="score-big" id="totalScore">0</div>
+    <p>التقييم العام</p>
+</div>
+
+<div class="container" id="metricsContainer"></div>
+
+<div class="metric-card" style="text-align:center;">
+    <h3>اقرأ هذه الآية:</h3>
+    <p id="targetVerse" style="font-family: 'Amiri', serif; font-size: 1.4rem; color: var(--accent-green);"></p>
+</div>
+
+<div class="control-btns">
+    <button id="startBtn" onclick="startRecording()" style="background:var(--accent-green);">ابدأ التسجيل</button>
+    <button id="stopBtn" onclick="stopRecording()" style="background:#ef4444;" disabled>إيقاف وتحليل</button>
+</div>
+
+<script>
+    const verses = [
+    "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ الرَّحْمَنِ الرَّحِيمِ مَالِكِ يَوْمِ الدِّينِ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+    "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ"
+];
+    
+    // اختيار آية عشوائية عند فتح الصفحة
+    document.getElementById('targetVerse').innerText = verses[Math.floor(Math.random() * verses.length)];
+
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('reciterNameDisplay').innerText = "تحليل: " + (params.get('reciter') || "القارئ");
+
+    // بناء واجهة المقاييس
+    const metrics = [ { id: "lahn", title: "اللحن والأداء" }, { id: "nutq", title: "النطق الصحيح" }, { id: "nafs", title: "التحكم في النفس" }, { id: "tajweed", title: "أحكام التجويد" }, { id: "ghilza", title: "غلظة وحدة الصوت" } ];
+    const container = document.getElementById('metricsContainer');
+    metrics.forEach(m => {
+        container.innerHTML += `<div class="metric-card"><div style="display:flex; justify-content:space-between;"><span>${m.title}</span><span id="score-${m.id}">0/10</span></div><div class="progress-bg"><div class="progress-fill" id="fill-${m.id}"></div></div></div>`;
+    });
+
+    let mediaRecorder, audioChunks = [];
+    async function startRecording() {
+        audioChunks = [];
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+        mediaRecorder.start();
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('stopBtn').disabled = false;
+    }
+
+   async function stopRecording() {
+        mediaRecorder.stop();
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('stopBtn').disabled = true;
+
+        mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const verseText = document.getElementById('targetVerse').innerText;
+            
+            // الحل: استخدام encodeURIComponent لتشفير النص العربي
+            const encodedVerse = encodeURIComponent(verseText);
+            
+            const response = await fetch("/api/analyze", {
+                method: "POST",
+                headers: { 'x-reference-text': encodedVerse },
+                body: audioBlob
+            });
+            const result = await response.json();
+            updateUI(result.scores); 
+        };
+    }
+
+    function updateUI(scores) {
+        let total = 0;
+        for (let key in scores) {
+            document.getElementById(`score-${key}`).innerText = `${scores[key]}/10`;
+            document.getElementById(`fill-${key}`).style.width = `${scores[key] * 10}%`;
+            total += scores[key];
+        }
+        document.getElementById('totalScore').innerText = (total / 5).toFixed(1);
+    }
+</script>
+</body>
+</html>

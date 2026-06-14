@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صوتك | بوابة القرآن الكريم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        // مفتاح التحقق من الأسبوع
+        function checkWelcome() {
+            const lastVisit = localStorage.getItem('lastWelcomeDate');
+            const now = new Date().getTime();
+            const oneWeek = 7 * 24 * 60 * 60 * 1000; 
+
+            // إذا كان المستخدم قد زار الموقع قبل أقل من أسبوع، نحوله فوراً للرئيسية (home.html)
+            if (lastVisit && (now - lastVisit < oneWeek)) {
+                window.location.href = 'home.html';
+            } else {
+                // إذا مر أسبوع أو أول زيارة، نحدث التاريخ ونبقى في صفحة الترحيب
+                localStorage.setItem('lastWelcomeDate', now);
+            }
+        }
+        checkWelcome();
+    </script>
+
+    <style>
+        :root {
+            --primary-green: #065F46;
+            --light-green: #10B981;
+            --pure-white: #FFFFFF;
+            --soft-white: #F9FAFB;
+        }
+
+        body, html { margin: 0; padding: 0; overflow-x: hidden; font-family: 'Almarai', sans-serif; background-color: var(--soft-white); }
+
+        /* --- شاشة الترحيب --- */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000000; display: flex; justify-content: center;
+            align-items: center; z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #splash-screen img {
+            width: 100%; height: 100%; object-fit: cover; animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        /* --- محتوى الصفحة (يظهر بعد الترحيب) --- */
+        #main-content { opacity: 0; transition: opacity 1s ease; }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green), #042F2E);
+            height: 80vh; min-height: 500px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; color: white; text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%); padding: 0 20px;
+        }
+
+        .hero-title { font-family: 'Amiri', serif; font-size: 4rem; margin-bottom: 10px; }
+        .hero-subtitle { font-size: 1.5rem; opacity: 0.9; max-width: 700px; line-height: 1.6; }
+        
+        .cta-button {
+            margin-top: 30px; padding: 15px 40px; background-color: var(--light-green);
+            color: white; text-decoration: none; border-radius: 50px; font-weight: bold;
+            transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .cta-button:hover { background-color: var(--pure-white); color: var(--primary-green); transform: translateY(-5px); }
+
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px; padding: 50px; margin-top: -50px; position: relative; z-index: 5;
+        }
+
+        .feature-card {
+            background: white; padding: 30px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-bottom: 4px solid var(--light-green);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section { height: auto; padding-top: 60px; padding-bottom: 120px; clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%); }
+            .hero-title { font-size: 2.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <img src="Gemini_Generated_Image_igxq04igxq04igxq.png" alt="شعار منصة صوتك">
+    </div>
+
+    <div id="main-content">
+        <section class="hero-section">
+            <h1 class="hero-title">منصة صوتك للقرآن الكريم</h1>
+            <p class="hero-subtitle">أول منصة برمجية ذكية لخدمة القراء، الحفاظ، ومحبي التلاوة باستخدام تقنيات الذكاء الاصطناعي</p>
+            <a href="home.html" class="cta-button">ابدأ التجربة الآن</a>
+        </section>
+
+        <div class="features-grid">
+            <div class="feature-card"><h3>ختمة إيمانية</h3><p>قراءة المصحف بالرسم العثماني برواية حفص عن عاصم.</p></div>
+            <div class="feature-card"><h3>التسميع الذكي</h3><p>سمّع وتلقَّ التصحيح الفوري من المنصة بدقة عالية.</p></div>
+            <div class="feature-card"><h3>محاكاة القراء</h3><p>حلل بصمتك الصوتية وتعلم كيف تقرأ بأسلوب كبار القراء.</p></div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const splash = document.getElementById('splash-screen');
+            const content = document.getElementById('main-content');
+
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+                content.style.opacity = '1';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
