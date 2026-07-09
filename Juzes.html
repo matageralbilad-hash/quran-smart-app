@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-dark: #064E3B; /* لون الخلفية الأخضر الداكن الموحد */
-            --header-dark: #033E2F; /* لون الهيدر الفخم */
+            --primary-dark: #064E3B;
+            --header-dark: #033E2F;
             --accent-green: #10B981;
             --white: #FFFFFF;
-            --card-bg: rgba(255, 255, 255, 0.08); /* خلفية زجاجية للبطاقات لتوحيد الهوية */
+            --card-bg: rgba(255, 255, 255, 0.08);
         }
 
         body {
@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* القائمة العلوية (Header) الموحدة والفخمة */
         header {
             background-color: var(--header-dark);
             padding: 15px 20px;
@@ -76,7 +75,6 @@
             flex-grow: 1;
         }
 
-        /* القائمة الجانبية المنسدلة */
         .overlay-menu {
             height: 0%;
             width: 100%;
@@ -114,7 +112,6 @@
             cursor: pointer;
         }
 
-        /* شبكة الأجزاء المحسنة بصرياً */
         .juz-container {
             padding: 30px;
             display: grid;
@@ -169,7 +166,6 @@
 </head>
 <body>
 
-    <!-- القائمة الجانبية الضخمة -->
     <div id="bigMenu" class="overlay-menu">
         <span class="close-btn" onclick="closeNav()">&times;</span>
         <div class="overlay-content" style="text-align: center; width: 100%;">
@@ -178,17 +174,13 @@
             <a href="Search_by_word.html">البحث بالآيات</a>
             <a href="Share.html">مشاركة التطبيق</a>
             <hr style="width: 10%; border: 0.5px solid var(--accent-green); margin: 20px auto;">
-            <a href="home.html" style="font-size: 1.2rem; opacity: 0.7;">الرئيسية</a>
+            <a href="index.html" style="font-size: 1.2rem; opacity: 0.7;">الرئيسية</a>
         </div>
     </div>
 
-    <!-- الهيدر المطور بالكامل مع الحفاظ على الترس الأصلي الملتف والزر الرجوع -->
     <header>
         <div class="header-right">
-            <!-- زر العودة المباشر للصفحة الرئيسية -->
             <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-            
-            <!-- أيقونة الترس الأصلية المسترجعة بالكامل لفتح القائمة الجانبية -->
             <button class="settings-trigger" onclick="openNav()">
                 <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-green);">
                     <circle cx="12" cy="12" r="3"></circle>
@@ -197,10 +189,9 @@
             </button>
         </div>
         <h1 class="brand-name">منصة صوتك | أجزاء القرآن</h1>
-        <div style="width: 60px;"></div> <!-- توازن لتوسيط العنوان تماماً -->
+        <div style="width: 60px;"></div>
     </header>
 
-    <!-- حاوية شبكة الأجزاء المحدثة -->
     <div class="juz-container" id="juzGrid"></div>
 
     <script>
@@ -208,7 +199,6 @@
         function closeNav() { document.getElementById("bigMenu").style.height = "0%"; }
 
         const gridElement = document.getElementById('juzGrid');
-        
         if(gridElement) {
             for (let i = 1; i <= 30; i++) {
                 gridElement.innerHTML += `

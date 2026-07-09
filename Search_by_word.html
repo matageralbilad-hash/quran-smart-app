@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* القائمة العلوية (Header) الموحدة والفخمة */
         header {
             background-color: var(--header-dark);
             padding: 15px 20px;
@@ -76,7 +75,6 @@
             flex-grow: 1;
         }
 
-        /* شريط البحث المطور */
         .search-section {
             padding: 30px 20px 10px 20px;
             text-align: center;
@@ -119,7 +117,6 @@
             font-size: 1.2rem;
         }
 
-        /* نتائج البحث */
         .results-container {
             max-width: 800px;
             margin: 10px auto;
@@ -151,9 +148,8 @@
             text-align: right;
         }
 
-        /* تظليل الكلمة المبحوث عنها */
         .highlight {
-            color: #22C55E; /* لون أخضر زمردي مشع وجذاب للكلمة المطبقة */
+            color: #22C55E;
             background: rgba(34, 197, 94, 0.1);
             padding: 0 4px;
             border-radius: 4px;
@@ -191,7 +187,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* القائمة الجانبية */
         .overlay-menu {
             height: 0%;
             width: 100%;
@@ -232,7 +227,6 @@
 </head>
 <body>
 
-    <!-- القائمة الجانبية الضخمة -->
     <div id="bigMenu" class="overlay-menu">
         <span class="close-btn" onclick="closeNav()">&times;</span>
         <div class="overlay-content" style="text-align: center; width: 100%;">
@@ -241,7 +235,7 @@
             <a href="Search_by_word.html" onclick="closeNav()">البحث بالآيات</a>
             <a href="Share.html">مشاركة التطبيق</a>
             <hr style="width: 10%; border: 0.5px solid var(--accent-green); margin: 20px auto;">
-            <a href="home.html" style="font-size: 1.2rem; opacity: 0.7;">الرئيسية</a>
+            <a href="index.html" style="font-size: 1.2rem; opacity: 0.7;">الرئيسية</a>
         </div>
     </div>
 
@@ -281,7 +275,6 @@
     let quranData = [];
     let debounceTimer;
 
-    // دالة التجريد اللغوي لتنظيف الرموز والحركات تماماً
     function normalizeText(text) {
         if (!text) return '';
         return text
@@ -295,7 +288,6 @@
             .trim();
     }
 
-    // دالة التحميل الذكي وحفظ البيانات محلياً لمنع التكرار والعمل الـ Offline
     async function loadQuran() {
         const cachedData = localStorage.getItem('quran_clean_data');
         
@@ -311,7 +303,6 @@
             const data = await response.json();
             quranData = data.data.surahs;
             
-            // حفظ في الذاكرة المحلية لجهاز المستخدم
             localStorage.setItem('quran_clean_data', JSON.stringify(quranData));
             statusMsg.innerText = "جاهز للبحث الفوري! اكتب الآن (مثلاً: الحمد، الصلاة، المؤمنون)";
         } catch (error) {
@@ -321,14 +312,13 @@
 
     loadQuran();
 
-    // ميزة الـ Debounce لتقليل استهلاك المعالج وتفادي تهنيج الهاتف
     searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
         const keyword = e.target.value;
 
         debounceTimer = setTimeout(() => {
             performSearch(keyword);
-        }, 300); // الانتظار لـ 300 مللي ثانية بعد توقف المستخدم عن الضغط
+        }, 300);
     });
 
     function performSearch(keyword) {
@@ -357,20 +347,17 @@
         displayResults(results, keyword);
     }
 
-    // دالة العرض وميزة تمييز وتلوين كلمة البحث الذكية
     function displayResults(results, keyword) {
         if (results.length === 0) {
             resultsDiv.innerHTML = '<div class="status-msg">لم يتم العثور على نتائج. تأكد من كتابة الكلمة بشكل صحيح.</div>';
             return;
         }
 
-        // إنشاء تعبير نمطي للكلمة المبحوث عنها لتلوينها
         const escapedKeyword = keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
         const regex = new RegExp(`(${escapedKeyword})`, 'gi');
 
         resultsDiv.innerHTML = `<div style="margin-bottom:15px; font-weight:bold; color:var(--accent-green); text-align:right;">تم إيجاد ${results.length} نتيجة</div>` + 
             results.slice(0, 100).map(res => {
-                // تظليل الكلمة بذكاء داخل النص الأصلي المعروض
                 const highlightedText = res.text.replace(regex, '<span class="highlight">$1</span>');
                 
                 return `
