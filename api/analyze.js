@@ -1,32 +1,32 @@
 import { GoogleGenAI } from "@google/genai";
 
-// 1. تعطيل الـ bodyParser الافتراضي لاستقبال ملف الصوت الخام كـ Stream
+// 1. تعطيل الـ bodyParser الافتراضي لاستقبال ملف الصوت الخام كـ Buffer
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-// 2. إعداد مكتبة جينمي باستخدام المفتاح السري الذي حفظته في فيرسل
+// 2. إعداد مكتبة جينمي الرسمية الحديثة
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_QURAN_API_KEY,
 });
 
 export default async function handler(req, res) {
-  // استقبال طلبات POST فقط القادمة من صفحة التقييم
+  // استقبال طلبات POST فقط
   if (req.method !== "POST") {
     return res.status(405).json({ error: "المسار يقبل طلبات POST فقط" });
   }
 
   try {
-    // 3. استخراج نصوص الهيدرز المشفرة القادمة من الفرونت إند
+    // 3. استخراج نصوص الهيدرز المشفرة القادمة من الواجهة
     const encodedVerse = req.headers['x-reference-text'] || "";
     const referenceText = decodeURIComponent(encodedVerse).trim();
 
     const encodedReciter = req.headers['x-target-reciter'] || "";
     const targetReciter = decodeURIComponent(encodedReciter).trim();
 
-    // 4. تجميع أجزاء كتل الصوت القادمة من المتصفح في مصفوفة Buffer موحدة
+    // 4. تجميع كتل الصوت بكفاءة عالية متوافقة مع Vercel
     const chunks = [];
     for await (const chunk of req) {
       chunks.push(chunk);
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "الملف الصوتي فارغ أو لم يتم استلامه بشكل صحيح" });
     }
 
-    // 5. صياغة الأمر الإرشادي (Prompt) لـ Gemini ليقوم بدور المحكّم الصوتي الحقيقي
+    // 5. صياغة الأمر الإرشادي (Prompt) بدقة عالية
     const prompt = `
       أنت محكّم خبير ومجاز في مسابقة قرآنية عالمية. 
       أمامك تسجيل صوتي لمستمع يحاول محاكاة تلاوة الشيخ المختار: "${targetReciter}".
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
       }
     `;
 
-    // 6. استدعاء نموذج Gemini 1.5 Flash القوي في معالجة الصوت والنصوص معاً
+    // 6. الاستدعاء الصحيح لـ Gemini 1.5 Flash حسب تحديث الـ SDK الجديد
     const response = await ai.models.generateContent({
       model: "gemini-1.5-flash",
       contents: [
@@ -77,29 +77,29 @@ export default async function handler(req, res) {
           },
         },
       ],
-      generationConfig: {
+      config: {
         responseMimeType: "application/json",
       },
     });
 
-    // 7. قراءة وتحليل النتيجة القادمة من الذكاء الاصطناعي
+    // 7. قراءة وتحليل النتيجة
     const resultText = response.text;
     const analysisResults = JSON.parse(resultText);
 
-    // 8. تصدير النتيجة النهائية لتعرضها واجهة المستخدم فوراً وبنفس مسميات الـ Bars القديمة
-    res.status(200).json({
+    // 8. تصدير النتيجة النهائية للفرونت إند
+    return res.status(200).json({
       scores: {
-        lahn: Number(analysisResults.scores.lahn),
-        nutq: Number(analysisResults.scores.nutq),
-        nafs: Number(analysisResults.scores.nafs),
-        tajweed: Number(analysisResults.scores.tajweed),
-        ghilza: Number(analysisResults.scores.ghilza),
+        lahn: Number(analysisResults.scores.lahn || 0),
+        nutq: Number(analysisResults.scores.nutq || 0),
+        nafs: Number(analysisResults.scores.nafs || 0),
+        tajweed: Number(analysisResults.scores.tajweed || 0),
+        ghilza: Number(analysisResults.scores.ghilza || 0),
       },
-      advice: analysisResults.advice
+      advice: analysisResults.advice || "أداء طيب، استمر في المحاكاة والتدريب."
     });
 
   } catch (err) {
     console.error("API Error:", err);
-    res.status(500).json({ error: "فشل في تحليل ومعالجة الملف الصوتي عبر الذكاء الاصطناعي" });
+    return res.status(500).json({ error: "فشل في تحليل ومعالجة الملف الصوتي عبر الذكاء الاصطناعي" });
   }
 }
