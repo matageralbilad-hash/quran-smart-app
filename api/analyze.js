@@ -65,7 +65,7 @@ export default async function handler(req, res) {
       }
     `;
 
-    // 6. الاستدعاء الصحيح لـ Gemini 1.5 Flash حسب تحديث الـ SDK الجديد
+    // 6. الاستدعاء الصحيح لـ Gemini 1.5 Flash مع دمج الـ responseMimeType في الكائن الرئيسي
     const response = await ai.models.generateContent({
       model: "gemini-1.5-flash",
       contents: [
@@ -77,23 +77,23 @@ export default async function handler(req, res) {
           },
         },
       ],
-      config: {
-        responseMimeType: "application/json",
-      },
+      responseMimeType: "application/json"
     });
 
-    // 7. قراءة وتحليل النتيجة
-    const resultText = response.text;
+    // 7. تنظيف النتيجة من أي علامات Markdown محتملة قبل التحليل لتجنب خطأ الـ JSON Syntax
+    let resultText = response.text || "";
+    resultText = resultText.replace(/```json/g, "").replace(/```/g, "").trim();
+    
     const analysisResults = JSON.parse(resultText);
 
     // 8. تصدير النتيجة النهائية للفرونت إند
     return res.status(200).json({
       scores: {
-        lahn: Number(analysisResults.scores.lahn || 0),
-        nutq: Number(analysisResults.scores.nutq || 0),
-        nafs: Number(analysisResults.scores.nafs || 0),
-        tajweed: Number(analysisResults.scores.tajweed || 0),
-        ghilza: Number(analysisResults.scores.ghilza || 0),
+        lahn: Number(analysisResults.scores?.lahn || 0),
+        nutq: Number(analysisResults.scores?.nutq || 0),
+        nafs: Number(analysisResults.scores?.nafs || 0),
+        tajweed: Number(analysisResults.scores?.tajweed || 0),
+        ghilza: Number(analysisResults.scores?.ghilza || 0),
       },
       advice: analysisResults.advice || "أداء طيب، استمر في المحاكاة والتدريب."
     });
