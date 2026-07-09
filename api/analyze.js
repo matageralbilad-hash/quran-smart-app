@@ -65,9 +65,9 @@ export default async function handler(req, res) {
       }
     `;
 
-    // 6. الاستدعاء الصحيح لـ Gemini 1.5 Flash مع دمج الـ responseMimeType في الكائن الرئيسي
+    // 6. الاستدعاء المحدث والمضمون باستخدام gemini-2.5-flash
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: [
         prompt,
         {
