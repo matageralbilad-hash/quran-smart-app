@@ -3,21 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صوتك | بوابة القرآن الكريم</title>
+    
+    <title>منصة صوتك | بوابة القرآن الكريم والتسميع الذكي</title>
+    
+    <meta name="description" content="منصة صوتك للقرآن الكريم هي أول منصة برمجية ذكية لخدمة القراء والحفاظ ومحبي التلاوة. جرب التسميع الذكي والتصحيح الفوري ومحاكاة كبار القراء بالذكاء الاصطناعي.">
+    
+    <meta name="keywords" content="منصة صوتك, القرآن الكريم, التسميع الذكي, تصحيح التلاوة, ذكاء اصطناعي قرآن, محاكاة القراء, حفظ القرآن">
+    <meta name="author" content="منصة صوتك">
+
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="منصة صوتك | بوابة القرآن الكريم والتسميع الذكي">
+    <meta property="og:description" content="سمّع وتلقَّ التصحيح الفوري بدقة عالية وحلل بصمتك الصوتية لتتعلم تلاوة كبار القراء.">
+    <meta property="og:image" content="https://sawtak-platform.vercel.app/Gemini_Generated_Image_igxq04igxq04igxq.png">
+    <meta property="og:url" content="https://sawtak-platform.vercel.app">
+    <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
     
     <script>
-        // مفتاح التحقق من الأسبوع
         function checkWelcome() {
             const lastVisit = localStorage.getItem('lastWelcomeDate');
             const now = new Date().getTime();
             const oneWeek = 7 * 24 * 60 * 60 * 1000; 
 
-            // إذا كان المستخدم قد زار الموقع قبل أقل من أسبوع، نحوله فوراً للرئيسية (home.html)
             if (lastVisit && (now - lastVisit < oneWeek)) {
                 window.location.href = 'home.html';
             } else {
-                // إذا مر أسبوع أو أول زيارة، نحدث التاريخ ونبقى في صفحة الترحيب
                 localStorage.setItem('lastWelcomeDate', now);
             }
         }
@@ -34,7 +46,6 @@
 
         body, html { margin: 0; padding: 0; overflow-x: hidden; font-family: 'Almarai', sans-serif; background-color: var(--soft-white); }
 
-        /* --- شاشة الترحيب --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #000000; display: flex; justify-content: center;
@@ -47,7 +58,6 @@
 
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* --- محتوى الصفحة (يظهر بعد الترحيب) --- */
         #main-content { opacity: 0; transition: opacity 1s ease; }
 
         .hero-section {
