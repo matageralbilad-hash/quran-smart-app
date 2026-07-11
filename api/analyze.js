@@ -65,9 +65,9 @@ export default async function handler(req, res) {
       }
     `;
 
-    // 6. الاستدعاء المحدث والمضمون باستخدام gemini-2.5-flash
+    // 6. الاستدعاء المعتمد والمستقر في الحزمة الحالية لتجنب الـ 404
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash", 
       contents: [
         prompt,
         {
